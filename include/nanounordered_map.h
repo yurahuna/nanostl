@@ -28,6 +28,8 @@
 #include "nanoutility.h"  // nanostl::pair
 #include "nanovector.h"
 
+#define NANOSTL_DEBUG // !! delete !!
+
 #ifdef NANOSTL_DEBUG
 #include <iostream>
 #endif
@@ -81,11 +83,11 @@ class unordered_map {
   */
 
   unordered_map() {
-
+    // data.resize(10);
   }
 
   ~unordered_map() {
-
+    // data.clear();
   }
 
   // accessors:
@@ -102,14 +104,11 @@ class unordered_map {
 
   // insert/erase
 
-  /*
-  typedef pair<iterator, bool> pair_iterator_bool;
-  pair_iterator_bool insert(const value_type& x) {
-    pair<Node*, pair_iterator_bool> p = __insert(root, x);
-    root = p.first;
-    return p.second;
+  // typedef pair<iterator, bool> pair_iterator_bool;
+  // pair_iterator_bool insert(const value_type& x) {
+  void insert(const value_type& x) {
+    data[hash_with_mod(x.first)].push_back(x);
   }
-  */
 
   // unordered_map operations:
 
@@ -122,16 +121,24 @@ class unordered_map {
 
   // debug:
 
-  /*
   void print() {
 #ifdef NANOSTL_DEBUG
-    __print(root);
+    for (int i = 0; i < data.size(); ++i) {
+      std::cout << i << ":";
+      for (int j = 0; j < data[i].size(); ++j) {
+        std::cout << " (" << data[i][j].first << ", " << data[i][j].second << ")";
+      }
+      std::cout << std::endl;
+    }
 #endif
   }
-  */
 
  private:
   vector<vector<value_type> > data;
+
+  int hash_with_mod(const key_type& key) {
+    return key % static_cast<int>(data.size());
+  }
 };
 
 }  // namespace nanostl
